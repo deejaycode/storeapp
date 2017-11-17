@@ -2,6 +2,32 @@
 	
 	$page_title = "Login";
 	include 'include/header.php';
+	include 'include/db.php';
+	include 'include/function.php';
+
+
+		if(array_key_exists('register', $_POST)){
+
+				$error = [];
+
+				if(empty($_POST['email'])){
+					$error [] = "Please enter email";
+				}
+				if(empty($_POST['password'])){
+					$error[] = "Please enter password";
+				}
+				if(empty($error)){
+
+					#do login stuff
+				}
+				else{
+
+					foreach ($error as $err) {
+						# code...
+						echo $err.'</br>';
+					}
+				}
+		}
 
 ?>
 
