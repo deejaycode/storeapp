@@ -232,6 +232,18 @@
 		}
 
 
+		function curNave($page){
+
+
+			$curPage = basename($_SERVER['SCRIPT_FILENAME']);
+
+			if($curPage == $page){
+					echo 'class ="selected"';
+
+			}
+		}
+
+
 
 
 

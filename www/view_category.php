@@ -3,9 +3,10 @@
 	session_start();
 
 	$page_title= "view category";
-	include "include/dashboard_header.php";
-	include "include/db.php";
+		include "include/db.php";
 	include "include/function.php";
+	include "include/dashboard_header.php";
+
 
 	checkLogin();
 
