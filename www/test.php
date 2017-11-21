@@ -4,6 +4,13 @@
 
 <?php
 
+	session_start();
+
+	$admin_id = $_SESSION['admin_id'];
+	$name = $_SESSION['name'];
+
+	echo "Hello, $name,";
+
 	include ('include/function.php');
 
 	define('MAX_FILE_SIZE', '2097152');

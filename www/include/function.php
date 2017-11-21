@@ -87,6 +87,100 @@
 
 		}
 
+
+		/*function validateLogin($dbconn, $email, $password){
+
+
+					$result = "";
+					$stmt = $dbconn->prepare("SELECT * FROM admin WHERE :e= email");
+					$stmt->bindParam(":e", $email);
+					$stmt->execute();
+
+					while($fetch=$stmt->fetch(PDO::FETCH_ASSOC)){
+						$hash = $fetch['hash'];
+
+						if(password_verify($password, $hash)){
+							$result = true;
+
+						} else{
+							$result = false;
+
+						}
+
+						return $result;
+
+
+					}
+
+					
+		}*/
+
+
+		function adminLogin($dbconn, $input){
+
+			$result = [];
+
+			$stmt = $dbconn->prepare("SELECT * FROM admin WHERE email = :e");
+
+			$stmt->bindParam(':e', $input['email']);
+			$stmt->execute();
+
+			$count = $stmt->rowCount();
+			$row = $stmt->fetch(PDO::FETCH_BOTH);
+
+			//print_r($row); exit();
+
+			if($count != 1 || !password_verify($input['password'], $row['hash'])) {
+
+				$result[] = false;
+			}else{
+				$result[] = true;
+				$result[] = $row;
+			}
+
+			return $result;
+
+
+		}
+
+
+		function addCategory($dbconn, $input){
+
+			$stmt = $dbconn->prepare("INSERT INTO category(category_name) VALUES(:catName)");
+
+			$stmt->bindParam(':catName', $input['cat_name']);
+
+			$stmt->execute();
+
+
+		}
+
+
+		function checkLogin(){
+
+			if(!isset($_SESSION['admin_id'])){
+					header("location:login.php");
+			}
+
+		}
+
+
+		function redirect($location, $msg){
+
+			header("Location: ".$location.$msg);
+		}
+
+
+
+
+
+
+
+
+
+
+
+
 	
 
 ?>

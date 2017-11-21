@@ -8,7 +8,7 @@
 
 			$error = [];
 
-		if(array_key_exists('register', $_POST)){
+		if(array_key_exists('login', $_POST)){
 
 				
 
@@ -19,50 +19,36 @@
 					$error['password'] = "Please enter password";
 				}
 				if(empty($error)){
+					$clean = array_map('trim', $_POST);
 
-					#do login stuff
-					$removeSpace = array_map('trim',$_POST);
-					$stmt = $conn->prepare("SELECT * FROM admin WHERE :e= email AND :h= password");
-					$data = [
-						":e"=> $_POST['email'],
-						":h"=> $_POST['password'],
+					$data = adminLogin($conn, $clean);
 
-					];
+					if($data[0]){
 
-					$stmt->execute($data);
+						$details = $data[1];
 
-					$count = $stmt->rowCount();
+						$_SESSION['admin_id'] = $details['admin_id'];
+						$_SESSION['name'] = $details['firstName'].' '.$details['lastName'];
 
-					if($count = 1){
 
-						$result = array_values($count);
+							redirect("add_category.php?msg=", "admin successfully logged in");
 
-						$_SESSION['admin_id']= $result['admin_id'];
-						$_SESSION['email'] = $result['email'];
-
-						$message = "congratulations";
-
-						header("location:home.php?message=$message");
-						}
-					else{
-
-						$message = "invalid username and password";
-
-						header("location:login.php?message=$message");
-						}
-
+					}else{
+						header("location:login.php?msg='Invalid email or password'");
 					}
 
-				}
-				else{
 
-					foreach ($error as $error){
-						# code...
-						echo $error.'</br>';
-					}
+
+					/*if(validateLogin($conn,$_POST['email'], $_POST['password'])) {
+						header("location:home.php");
+					}else{
+						echo "Invalid email/password";
+						header("location:login.php");
+					}	*/				
 				}
+			}
 		
-
+			
 ?>
 
 
@@ -72,17 +58,24 @@
 		<hr>
 		<form id="register"  action ="login.php" method ="POST">
 			<div>
-				<?php if(isset($_POST['email'])){ echo '<span class=err>'.$error['email'].'</span>'; } ?>
+				<?php 
+					$info = displayErrors($error, 'email');
+					echo $info;
+				?>
 				<label>email:</label>
 				<input type="text" name="email" placeholder="email">
 			</div>
 			<div>
-				<?php if(isset($_POST['password'])){ echo '<span class=err>'.$error['password'].'</span>'; } ?>
+				<?php 
+					$info = displayErrors($error, 'password');
+					echo $info;
+
+				 ?>
 				<label>password:</label>
 				<input type="password" name="password" placeholder="password">
 			</div>
 
-			<input type="submit" name="register" value="login">
+			<input type="submit" name="login" value="login">
 		</form>
 
 		<h4 class="jumpto">Don't have an account? <a href="register.php">register</a></h4>
