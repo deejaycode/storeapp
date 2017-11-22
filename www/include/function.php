@@ -2,7 +2,7 @@
 
 
 
-		/*function uploadFile($files, $name, $loc){
+		function uploadFile($files, $name, $loc){
 
 			$result = false;
 
@@ -13,18 +13,13 @@
 			$destination = $loc.$fileName;
 
 			if (move_uploaded_file($files[$name]['tmp_name'], $destination)){
-				$result [] = true;
+				$result[] = true;
+				$result[] = $destination;
 			}else {
 				$result [] = false;
 			}
-
-
 			return $result;
-
-
-
-
-		}*/
+		}
 
 
 		function doAdminRegister($dbconn, $input){
@@ -274,7 +269,7 @@
    	    }
 
 
-   	    function addProduct($dbconn){
+   	    function addProduct($dbconn, $input){
 
    	    	$stmt = $dbconn->prepare("INSERT INTO books(title, author, price, publication_date, category_id,
    	    							flag, img_path)
@@ -282,19 +277,41 @@
 
    	    	$data = [
 
-   	    			":t" => $input['title'];
-   	    			":a" => $input['author'];
-   	    			":p" => $input['price'];
-   	    			":pub" => $input['year'];
-   	    			":cat" => $input['cat'];
-   	    			":fl" => $input['flag'];
-   	    			":img" => $input['dest'];
+   	    			":t" => $input['title'],
+   	    			":a" => $input['author'],
+   	    			":p" => $input['price'],
+   	    			":pub" => $input['year'],
+   	    			":cat" => $input['cat'],
+   	    			":fl" => $input['flag'],
+   	    			":img" => $input['dest']
 
    	    	];
 
+   	    	$stmt->execute($data);
+   	    }
 
 
+   	    function viewProducts($dbconn){
 
+   	    	$result = "";
+
+   	    	$stmt = $dbconn->prepare("SELECT * FROM books");
+
+   	    	$stmt->execute();
+
+   	    	while($row = $stmt->fetch(PDO::FETCH_BOTH)){
+
+   	    			$result .= '<tr><td>'.$row[1].'</td>';
+   	    			$result .= '<td>'.$row[2].'</td>';
+   	    			$result .= '<td>'.$row[3].'</td>';
+   	    			$result .= '<td>'.$row[5].'</td>';
+   	    			$result .= '<td><img src="'.$row[7].'" height="50" width="50"></td>';
+   	    			$result .= '<td><a href="edit_product.php?book_id='.$row[0].'">edit</a></td>';
+   	    			$result .= '<td><a href="delect_product.php?book_id='.$row[0].'">delete</a></td></tr>';
+
+   	    	}
+
+   	    	return $result;
 
    	    }
 

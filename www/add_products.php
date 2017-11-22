@@ -46,25 +46,37 @@
 			$errors['catname'] = "Select a category";
 		}
 
-		if(empty($_FILES['image']['name'])){
-			$errors = "Please select a book image";
+		if(empty($_FILES['images']['name'])){
+			$errors['images'] = "Please select a book image";
 		}
 
-		if($_FILES['image']['size'] > MAX_FILE_SIZE){
-			$errors['image'] = "Image size too large";
+		if($_FILES['images']['size'] > MAX_FILE_SIZE){
+			$errors['images'] = "Image size too large";
 		}
 
-		if(!in_array($_FILES['image']['type'], $ext)){
-			$errors['image'] = "Image type not supported";
+		if(!in_array($_FILES['images']['type'], $ext)) {
+			$errors['images'] = "Image type not supported";
 
 		}
+
 		if(empty($errors)) {
 			
-	
+			$img = uploadFile($_FILES, 'images', 'uploads/');
+			print_r($img); exit();
+			if($img[0]){
+
+				$location = $img[1];
+			}
+
+			$clean = array_map('trim', $_POST);
+			$clean['dest'] = $location;
+
+			addProduct($conn, $clean);
+			echo "File added successfully";
+
+			redirect("view_products.php");
 
 		}
-
-
 	}
 
 ?>
@@ -149,18 +161,17 @@
 
 			 
 			<div>
-				<?php $data = displayErrors($errors, 'image');
+				<?php $data = displayErrors($errors, 'images');
 						echo $data;
 
 				?>
 				<label>Book Image:</label>	
-				<input type="file" name="image">
+				<input type="file" name="images">
 			</div>
 
 			<input type="submit" name="add" value="Add Product">
 		</form>
 
-			<h4 class="jumpto">Have an account? <a href="login.php">login</a></h4>
 	</div>
 
 <?php
