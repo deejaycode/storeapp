@@ -243,11 +243,60 @@
 			}
 		}
 
+		function deleteCategory($dbconn, $id) {
+
+        $stmt = $dbconn->prepare("DELETE FROM category WHERE category_id=:catId");
+
+        $stmt->bindParam(":catId", $id);
+
+        $stmt->execute($data);
+   		
+   	    }
+
+
+   	    function fetchCategory($dbconn, $val=null){
+   	    	$result = "";
+
+   	    	$stmt = $dbconn->prepare("SELECT * FROM category");
+
+   	    	$stmt->execute();
+
+
+   	    	while($row = $stmt->fetch(PDO::FETCH_BOTH)){
+
+   	    		$result .= '<option value="'.$row[0].'">'.$row[1].'</option>';
+
+   	    	}
+
+   	    	return $result;
+
+
+   	    }
+
+
+   	    function addProduct($dbconn){
+
+   	    	$stmt = $dbconn->prepare("INSERT INTO books(title, author, price, publication_date, category_id,
+   	    							flag, img_path)
+   	    							VALUES(:t, :a, :p, :pub, :cat, :fl, :img)");
+
+   	    	$data = [
+
+   	    			":t" => $input['title'];
+   	    			":a" => $input['author'];
+   	    			":p" => $input['price'];
+   	    			":pub" => $input['year'];
+   	    			":cat" => $input['cat'];
+   	    			":fl" => $input['flag'];
+   	    			":img" => $input['dest'];
+
+   	    	];
 
 
 
 
 
+   	    }
 
 	
 
