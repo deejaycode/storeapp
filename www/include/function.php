@@ -332,16 +332,16 @@
     }
 
 
-		function updateProduct($dbconn, $input) {
+		function editProduct($dbconn, $input) {
 
-        $stmt = $dbconn->prepare("UPDATE books SET title=:t, author=:a, price=:p, publication_date=:pub, flag=:fl WHERE book_id=:bookId");
+        $stmt = $dbconn->prepare("UPDATE books SET title=:t, author=:a, price=:p, publication_date=:pub, category_id=:cat_id WHERE book_id=:bookId");
 
         $data = [
             ":t"=>$input['title'],
             ":a"=>$input['author'],
             ":p"=>$input['price'],
             ":pub"=>$input['year'],
-            ":fl"=>$input['flag'],
+            ":cat_id"=>$input['cat'],
             ":bookId"=>$input['id']
         ];
 
@@ -356,6 +356,20 @@
 
         $stmt->execute();
     }
+
+
+    	function updateImage(){
+
+
+    		$stmt= $dbconn->prepare("UPDATE books SET img_path = :img WHERE book_id = :bid");
+
+    		$data = [
+    			":img" => $input['dest'],
+    			":bid" => $input['id']
+
+    		];
+
+    	}
 
 
 

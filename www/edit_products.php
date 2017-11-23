@@ -50,9 +50,9 @@
 
         }
 
-        if(empty($_POST['flag'])) {
+        if(empty($_POST['cat'])) {
 
-            $errors['flag'] = "Select the book flag";
+            $errors['cat_name'] = "Select the book flag";
 
         }
 
@@ -61,7 +61,7 @@
             $clean = array_map('trim', $_POST);
             $clean['id'] = $book_id;
 
-            updateProduct($conn, $clean);
+            editProduct($conn, $clean);
 
             redirect("view_products.php");
 
@@ -111,12 +111,12 @@
 
             <div>
 				<?php  
-					$info = displayErrors($errors, 'cat_name');
+					$info = displayErrors($errors, 'cat');
 					echo $info;
 				?>
 				<label>Product Category:</label>
-				<select name="cat_name">
-					<option><?php echo $category[1] ?></option>
+				<select name="cat">
+					<option value="<?php echo $category[0]; ?>"><?php echo $category[1] ?></option>
 					<?php
 						$data = fetchCategory($conn, $category[1]); 
 						echo $data;
@@ -127,7 +127,7 @@
 
              <input type="submit" name="edit" value="Edit product"/>
         </form>
-        <h4 class="jumpto">To edit product image <a href="edit_image.php">Click here</a></h4>
+        <h4 class="jumpto">To edit product image <a href="edit_image.php?img=<?php echo $book_id; ?>">Click here</a></h4>
     </div>
 </div>
 
