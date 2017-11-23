@@ -315,6 +315,38 @@
 
    	    }
 
+
+   	    	function getProduct($dbconn, $id){
+
+
+			$stmt = $dbconn->prepare("SELECT * FROM books WHERE book_id=:bookId");
+
+			$stmt->bindParam(':bookId', $id);
+
+			$stmt->execute();
+
+			$row = $stmt->fetch(PDO::FETCH_BOTH);
+
+			return $row;
+
+
+		}
+
+
+		function updateProduct($dbconn, $input){
+
+			$stmt = $dbconn->prepare("UPDATE books WHERE book_id=:bookId");
+
+			$stmt->bingParam(':bookId', $input);
+
+			$stmt->execute();
+
+
+
+
+
+		}
+
 	
 
 ?>

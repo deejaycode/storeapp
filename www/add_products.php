@@ -59,13 +59,18 @@
 
 		}
 
+
+
 		if(empty($errors)) {
+
+
 			
 			$img = uploadFile($_FILES, 'images', 'uploads/');
-			print_r($img); exit();
+			
 			if($img[0]){
 
 				$location = $img[1];
+				print_r($location); exit();
 			}
 
 			$clean = array_map('trim', $_POST);
