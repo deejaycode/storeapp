@@ -32,11 +32,11 @@
 			$errors['image'] = "Please select a book image"; 
 		}
 
-		if(empty($_FILES['image']['size'] > MAX_FILE_SIZE)){
+		if($_FILES['image']['size'] > MAX_FILE_SIZE){
 			$errors['image'] = "Image size too large";
 		}
 
-		if(empty($_FILES['image']['type'])){
+		if(!in_array($_FILES['image']['type'], $ext)){
 			$errors['image'] = "Image type not supported";
 		}
 
@@ -67,7 +67,7 @@
 
 	
 <div class="wrapper">
-	<form id="register" action="edit_image.php" method="POST" enctype="multipart/form-data">
+	<form id="register" action="" method="POST" enctype="multipart/form-data">
 			<div>
                 <?php  
 					$err = displayErrors($errors, 'image');
