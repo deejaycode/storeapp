@@ -259,6 +259,10 @@
 
    	    	while($row = $stmt->fetch(PDO::FETCH_BOTH)){
 
+   	    		if($val == $row[1]){
+   	    			continue;
+   	    		}
+
    	    		$result .= '<option value="'.$row[0].'">'.$row[1].'</option>';
 
    	    	}
@@ -269,83 +273,91 @@
    	    }
 
 
-   	    function addProduct($dbconn, $input){
+   	   	function addProducts($dbconn, $input) {
 
-   	    	$stmt = $dbconn->prepare("INSERT INTO books(title, author, price, publication_date, category_id,
-   	    							flag, img_path)
-   	    							VALUES(:t, :a, :p, :pub, :cat, :fl, :img)");
+        $stmt = $dbconn->prepare("INSERT INTO books(title, author, price, publication_date, category_id, flag, img_path)
+                                VALUES(:t,:a,:p,:pub,:cat,:fl,:img)");
 
-   	    	$data = [
+        $data = [
+            ":t"=> $input['title'],
+            ":a"=> $input['author'],
+            ":p"=> $input['price'],
+            ":pub" => $input['year'],
+            ":cat" => $input['cat'],
+            ":fl" => $input['flag'],
+            ":img" => $input['dest']
+        ];
 
-   	    			":t" => $input['title'],
-   	    			":a" => $input['author'],
-   	    			":p" => $input['price'],
-   	    			":pub" => $input['year'],
-   	    			":cat" => $input['cat'],
-   	    			":fl" => $input['flag'],
-   	    			":img" => $input['dest']
-
-   	    	];
-
-   	    	$stmt->execute($data);
-   	    }
+        $stmt->execute($data);
+                                
+   		 }
 
 
-   	    function viewProducts($dbconn){
+   	    function viewProducts($dbconn) {
 
-   	    	$result = "";
+        $result = "";
 
-   	    	$stmt = $dbconn->prepare("SELECT * FROM books");
+        $stmt = $dbconn->prepare("SELECT * FROM books");
 
-   	    	$stmt->execute();
+        $stmt->execute();
 
-   	    	while($row = $stmt->fetch(PDO::FETCH_BOTH)){
+        while($row = $stmt->fetch(PDO::FETCH_BOTH)) {
 
-   	    			$result .= '<tr><td>'.$row[1].'</td>';
-   	    			$result .= '<td>'.$row[2].'</td>';
-   	    			$result .= '<td>'.$row[3].'</td>';
-   	    			$result .= '<td>'.$row[5].'</td>';
-   	    			$result .= '<td><img src="'.$row[7].'" height="50" width="50"></td>';
-   	    			$result .= '<td><a href="edit_product.php?book_id='.$row[0].'">edit</a></td>';
-   	    			$result .= '<td><a href="delect_product.php?book_id='.$row[0].'">delete</a></td></tr>';
+            $result .= '<tr><td>'.$row[1].'</td>';
+            $result .= '<td>'.$row[2].'</td>';
+            $result .= '<td>'.$row[3].'</td>';
+            $result .= '<td>'.$row[5].'</td>';
+            $result .= '<td><img src="'.$row[7].'"height="50" width="50"></td>';
+            $result .= '<td><a href="edit_products.php?book_id='.$row[0].'">edit</a></td>';
+            $result .= '<td><a href="delete_products.php?book_id='.$row[0].'">delete</a></td></tr>';
 
-   	    	}
-
-   	    	return $result;
-
-   	    }
+        }
+        return $result;
+    }
 
 
-   	    	function getProduct($dbconn, $id){
+   	    function getProductById($dbconn, $id) {
+
+   	    $result  = "";
+
+        $stmt = $dbconn->prepare("SELECT * FROM books WHERE book_id=:bookId");
+
+        $stmt->bindParam(':bookId', $id);
+
+        $stmt->execute();
+
+        $result = $stmt->fetch(PDO::FETCH_BOTH);
+
+        return $result;
+    }
 
 
-			$stmt = $dbconn->prepare("SELECT * FROM books WHERE book_id=:bookId");
+		function updateProduct($dbconn, $input) {
 
-			$stmt->bindParam(':bookId', $id);
+        $stmt = $dbconn->prepare("UPDATE books SET title=:t, author=:a, price=:p, publication_date=:pub, flag=:fl WHERE book_id=:bookId");
 
-			$stmt->execute();
+        $data = [
+            ":t"=>$input['title'],
+            ":a"=>$input['author'],
+            ":p"=>$input['price'],
+            ":pub"=>$input['year'],
+            ":fl"=>$input['flag'],
+            ":bookId"=>$input['id']
+        ];
 
-			$row = $stmt->fetch(PDO::FETCH_BOTH);
+        $stmt->execute($data);
+    }
 
-			return $row;
+    	function deleteProduct($dbconn, $id) {
 
+        $stmt = $dbconn->prepare("DELETE FROM books WHERE book_id=:bookId");
 
-		}
+        $stmt->bindParam(":bookId", $id);
 
-
-		function updateProduct($dbconn, $input){
-
-			$stmt = $dbconn->prepare("UPDATE books WHERE book_id=:bookId");
-
-			$stmt->bingParam(':bookId', $input);
-
-			$stmt->execute();
+        $stmt->execute();
+    }
 
 
-
-
-
-		}
 
 	
 

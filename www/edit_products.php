@@ -1,81 +1,136 @@
 <?php
 
-	session_start();
+    session_start();
 
+    $page_title = "Edit Products";
 
-	$page_title = "Admin dashboard";
-
-	include "include/db.php";
+    include "include/db.php";
     include "include/function.php";
-	include "include/dashboard_header";
+    include "include/dashboard_header.php";
 
-	checkLogin();
-
-	if($_GET['book_id']){
-
-		$book_id = $_GET['book_id'];
-
-	}
-
-			$item = getProduct($conn, $book_id);
+    $flag = ['Top-Selling', 'Trending', 'Recently-Viewed'];
 
 
-		$errors = [];
+    checkLogin();
 
+    $errors = [];
 
-		if(array_key_exists(edit, $_POST)){
+    if($_GET['book_id']) {
+        $book_id = $_GET['book_id'];
+    }
 
-			if(empty($_POST['product_name'])){
+    $item = getProductById($conn, $book_id);
 
-				$errors[] = "Please enter product name";
-			}
+    $category = getCategory($conn, $item[5]);
+     //print_r($item); exit();
 
-			if(empty($errors)){
+    if(array_key_exists('edit', $_POST)) {
 
-				$clean = array_map('trim', $_POST);
-				$clean['book_id'] = $book_id;
+        if(empty($_POST['title'])) {
 
-				updateProduct($conn, $clean);
+            $errors['title'] = "Enter the book title";
 
-				redirect("view_products.php");
-			}
+        }
 
-			else{
+        if(empty($_POST['author'])) {
 
-				redirect("edit_products.php");
-			}
+            $errors['author'] = "Enter the book author";
 
+        }
 
-		}
+        if(empty($_POST['price'])) {
 
+            $errors['price'] = "Enter the book price";
 
+        }
 
+        if(empty($_POST['year'])) {
+
+            $errors['year'] = "Enter the publication year";
+
+        }
+
+        if(empty($_POST['flag'])) {
+
+            $errors['flag'] = "Select the book flag";
+
+        }
+
+        if(empty($errors)) {
+
+            $clean = array_map('trim', $_POST);
+            $clean['id'] = $book_id;
+
+            updateProduct($conn, $clean);
+
+            redirect("view_products.php");
+
+        }
+    }
 
 ?>
 
 <div class="wrapper">
-		<div id="stream">
+    <div id="stream">
+        <form id="register"  action ="" method ="POST">
+			<div>
+				<?php  
+					$info = displayErrors($errors, 'title');
+					echo $info;
+				?>
+				<label>Edit Title:</label>
+				<input type="text" name="title" placeholder="title" value="<?php echo $item[1]; ?>">
+            </div>
 
-			<form id="register"  action ="" method ="POST">
-				<div>
-					<?php 
-						$info = displayErrors($errors,'product_name');
-						echo $info;
+            <div>
+				<?php  
+					$info = displayErrors($errors, 'author');
+					echo $info;
+				?>
+				<label>Edit Author:</label>
+				<input type="text" name="author" placeholder="author" value="<?php echo $item[2]; ?>">
+            </div>
+
+            <div>
+				<?php  
+					$info = displayErrors($errors, 'price');
+					echo $info;
+				?>
+				<label>Edit Price:</label>
+				<input type="text" name="price" placeholder="price" value="<?php echo $item[3]; ?>">
+            </div>
+
+            <div>
+				<?php  
+					$info = displayErrors($errors, 'year');
+					echo $info;
+				?>
+				<label>Publication Year: </label>
+				<input type="text" name="year" placeholder="publication year" value="<?php echo $item[4]; ?>">
+            </div>
+
+            <div>
+				<?php  
+					$info = displayErrors($errors, 'cat_name');
+					echo $info;
+				?>
+				<label>Product Category:</label>
+				<select name="cat_name">
+					<option><?php echo $category[1] ?></option>
+					<?php
+						$data = fetchCategory($conn, $category[1]); 
+						echo $data;
 					?>
-					<label>product name:</label>
-					<input type="text" name="product_name" placeholder="Product name" value="<?php echo $item[1]; ?>">
-				</div>
-			
-			 <div>
-			<input type="submit" name="edit" value="Edit">
-			
-			</form>
+				</select>
+            </div>
 
-		</div>
 
-	</div>
+             <input type="submit" name="edit" value="Edit product"/>
+        </form>
+        <h4 class="jumpto">To edit product image <a href="edit_image.php">Click here</a></h4>
+    </div>
+</div>
 
 <?php
-
-	include "include/footer.php";
+    include("include/footer.php");
 ?>

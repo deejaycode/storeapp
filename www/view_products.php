@@ -1,40 +1,35 @@
 <?php
 
-	session_start();
+    session_start();
 
-	$page_title= "view category";
-	include "include/db.php";
-	include "include/function.php";
-	include "include/dashboard_header.php";
+    $page_title = "View Category";
 
-
-	checkLogin();
-
-
+    include "include/db.php";
+    include "include/function.php";
+    include "include/dashboard_header.php";
 
 ?>
 
-	<div class="wrapper">
+
+<div class="wrapper">
 		<div id="stream">
 			<table id="tab">
 				<thead>
 					<tr>
-						<th>Title</th>
-						<th>Author</th>
-						<th>Price</th>
-						<th>Category</th>
-						<th>Image</th>
+						<th>title</th>
+						<th>author</th>
+						<th>price</th>
+						<th>category</th>
+						<th>image</th>
 						<th>edit</th>
 						<th>delete</th>
 					</tr>
 				</thead>
 				<tbody>
-					<?php
-
-						
-					?>
-					
-
+                    <?php  
+                        $data = viewProducts($conn);
+                        echo $data;
+                    ?>
           		</tbody>
 			</table>
 		</div>
@@ -45,11 +40,10 @@
 			<span>3</span>
 			<a href="#">2</a>
 		</div>
-	</div>
+    </div>
+    
+    <?php 
 
+    include "include/footer.php"; 
 
-<?php
-
- include "include/footer.php";
-
- ?>
+    ?>

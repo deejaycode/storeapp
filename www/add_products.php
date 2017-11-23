@@ -1,186 +1,169 @@
 <?php
 
-    session_start();
+	$page_title = "Admin Dashboard";
 
-    $page_title = "Admin Dashboard";
-
-    include "include/db.php";
+	include "include/db.php";
     include "include/function.php";
-    include "include/dashboard_header.php";
-
-    checkLogin();
+	include "include/dashboard_header.php";
 
 	$errors = [];
 
-	$flag = ['Top-Selling', 'Trending', 'Recently Viewed'];
+	$flag = ['Top-Selling', 'Trending', 'Recently-Viewed'];
 
-	define('MAX_FILE_SIZE', 2097152);
-
-	$ext = ['image/jpeg', 'image/jpg', 'image/png'];
-
-
+	define('MAX_FILE_SIZE', '2097152');
 	
+	$ext = ['image/jpg', 'image/jpeg', 'image/png'];
+
 	if(array_key_exists('add', $_POST)) {
 
 		if(empty($_POST['title'])) {
-			$errors['title'] = "Enter the book title";
+			$errors['title'] = "Please enter book title";
+
 		}
 
 		if(empty($_POST['author'])) {
-			$errors['author'] = "Enter the book author";
+			$errors['author'] = "Please enter book author";
 		}
 
-		if(empty($_POST['price'])){
+		if(empty($_POST['price'])) {
 			$errors['price'] = "Please enter book price";
+
+		}
+
+		if(empty($_POST['cat'])) {
+			$errors['cat'] = "Please select book category";
+
 		}
 
 		if(empty($_POST['year'])) {
-			$errors['year'] = "Please enter year of publication";
+			$errors['year'] = "Please select date of publication";
+
 		}
 
 		if(empty($_POST['flag'])) {
 			$errors['flag'] = "Please select a flag";
-		}
-
-		if(empty($_POST['cat_name'])) {
-			$errors['catname'] = "Select a category";
-		}
-
-		if(empty($_FILES['images']['name'])){
-			$errors['images'] = "Please select a book image";
-		}
-
-		if($_FILES['images']['size'] > MAX_FILE_SIZE){
-			$errors['images'] = "Image size too large";
-		}
-
-		if(!in_array($_FILES['images']['type'], $ext)) {
-			$errors['images'] = "Image type not supported";
 
 		}
 
+		if(empty($_FILES['image']['name'])) {
+			$errors['image'] = "Please select a book image";
 
+		}
+
+		if($_FILES['image']['size'] > MAX_FILE_SIZE) {
+			$errors['image'] = "Image size too large";
+
+		}
+
+		if(!in_array($_FILES['image']['type'], $ext)) {
+			$errors['image'] = "Image type not suported";
+
+		}
 
 		if(empty($errors)) {
 
+			$img = uploadFile($_FILES, 'image', 'uploads/');
 
-			
-			$img = uploadFile($_FILES, 'images', 'uploads/');
-			
-			if($img[0]){
+			if($img[0]) {
 
 				$location = $img[1];
-				print_r($location); exit();
+
 			}
 
 			$clean = array_map('trim', $_POST);
 			$clean['dest'] = $location;
 
-			addProduct($conn, $clean);
-			echo "File added successfully";
-
+			addProducts($conn, $clean);
+			
 			redirect("view_products.php");
-
 		}
 	}
 
 ?>
 
 <div class="wrapper">
-		
 		<hr>
 		<form id="register"  action ="add_products.php" method ="POST" enctype="multipart/form-data">
 			<div>
-				<?php $data = displayErrors($errors, 'title');
-						echo $data;
-
-				  ?>
+                <?php 
+                    $title = displayErrors($errors, 'title');
+                    echo $title;
+                ?>
 				<label>Title:</label>
 				<input type="text" name="title" placeholder="title">
 			</div>
 			<div>
-				<?php $data = displayErrors($errors, 'author');
-						echo $data;
-
-				?>
+                <?php 
+                    $author = displayErrors($errors, 'author');
+                    echo $author;
+                ?>
 				<label>Author:</label>	
 				<input type="text" name="author" placeholder="author">
 			</div>
 
 			<div>
-				<?php $data = displayErrors($errors, 'price');
-						echo $data;
-
-				?>
+                <?php  
+                    $price= displayErrors($errors, 'price');
+                    echo $price;
+                ?>
 				<label>Price:</label>
 				<input type="text" name="price" placeholder="price">
 			</div>
 			<div>
-				<?php $data = displayErrors($errors, 'year');
+                <?php  
+                    $year = displayErrors($errors, 'year');
+                    echo $year;
+                ?>
+				<label>Publication Date:</label>
+				<input type="text" name="year" placeholder="publication date">
+			</div>
+ 
+			<div>
+                <?php  
+					$err = displayErrors($errors, 'cat');
+					echo $err;
+                ?>
+				<label>Category:</label>	
+				<select name= "cat">
+					<option value ="">Select Category</option>
+					<?php
+						$data = fetchCategory($conn);
 						echo $data;
-
-				?>
-				<label>Year:</label>
-				<input type="text" name="year" placeholder="Year">
-			</div>
-
-
-			<div>
-				<?php
-					$data = displayErrors($errors, 'cat');
-						echo $data;				
-
-				?>
-
-				<label>Category:</label>
-				<select name="cat">
-					<option>Categories</option>
-						<?php
-							$data = fetchCategory($conn);
-							echo $data;
-
-						?>
-
+					?>
 				</select>
-
 			</div>
 
 			<div>
-				<?php
-					$data = displayErrors($errors, 'flag');
-						echo $data;				
-
-				?>
-
-				<label>Flag:</label>
-				<select name="flag">
-						<option name="">Select Flag</option>
-						<?php
-						  foreach ($flag as $f1) { ?>
-						  	<option value="<?php echo $f1; ?>"><?php echo $f1; ?></option>
-						<?php } ?>
-
+                <?php  
+					$err = displayErrors($errors, 'flag');
+					echo $err;
+                ?>
+				<label>Flag:</label>	
+				<select name= "flag">
+					<option name="">Select Flag</option>
+					<?php foreach($flag as $fl) { ?>
+						<option value="<?php echo $fl; ?>"><?php echo $fl; ?></option>
+					<?php } ?>
 				</select>
-
 			</div>
 
-			 
 			<div>
-				<?php $data = displayErrors($errors, 'images');
-						echo $data;
+                <?php  
+					$err = displayErrors($errors, 'image');
+					echo $err;
+                ?>
+				<label>Image:</label>
 
-				?>
-				<label>Book Image:</label>	
-				<input type="file" name="images">
+				<input type ="file" name ="image"/>
 			</div>
 
-			<input type="submit" name="add" value="Add Product">
+			<input type="submit" name="add" value="Add Products">
 		</form>
+    </div>
 
-	</div>
 
-<?php
+    <?php
 
-    include "include/footer.php";
+    	include "include/footer.php";
 
-?>
+    ?>
