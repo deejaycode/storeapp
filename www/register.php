@@ -45,6 +45,10 @@
 					$clean = array_map('trim', $_POST);
 
 					 doAdminRegister($conn, $clean);
+
+					 $msg = "registration successful";
+
+					 redirect("login.php?msg=$msg");
 				}
 
 		}

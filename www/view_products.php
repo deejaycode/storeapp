@@ -2,7 +2,7 @@
 
     session_start();
 
-    $page_title = "View Category";
+    $page_title = "View Products";
 
     include "include/db.php";
     include "include/function.php";
