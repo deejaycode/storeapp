@@ -29,11 +29,12 @@
 			$totalPay = 0;
 			$overtime = 0;
 
-			if($this->duration > $this->_expectedWorkHours)
-				$overtime = $this->calculateOvertime($this->duration)
+			if($this->duration > $this->_expectedWorkHours){
+				$overtime = $this->calculateOvertime($this->duration);
+			}
 
 
-			$totalPay = ($this->_hourlyRate * $this->duration) + $overtime
+			$totalPay = ($this->_hourlyRate * $this->duration) + $overtime;
 
 			return $totalPay;
 		}

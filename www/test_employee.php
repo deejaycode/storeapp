@@ -24,24 +24,26 @@
 
 	echo "<br/>";
 
-	$h_employee = new hourly_employee("Laura", "Head PR", 5000, 39);
+	$h_employee = new hourly_employee("Laura", "Head PR", 45);
 
-	$pay = $h_employee->getAmountPaid();
+	$dur = $h_employee->getDuration();
+	
+	$overTime = $h_employee->calculateOvertime($dur);
 
 	$designation = $h_employee->getDesignation();
 
-	$hour = $h_employee->getDuration();
+	$baseSal = $h_employee->calculateBaseSalary();
 
 
-	$result = $h_employee->calculateOvertime($hour, $pay);
-
-	$newSal = $pay + $result;
-
-	echo $result;
+	echo $dur;
 
 	echo "<br/>";
 
-	echo $newSal;
+	echo $overTime;
+
+	echo "<br/>";
+
+	echo $baseSal;
 
 
 
